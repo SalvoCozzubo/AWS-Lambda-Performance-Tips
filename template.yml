@@ -1,0 +1,27 @@
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  Dependecies:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs14.x
+      ContentUri: ./src/dependecies
+    Metadata:
+      BuildMethod: nodejs14.x
+
+  Lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs14.x
+      Handler: index.handler
+      CodeUri: ./src/lambda
+      Tracing: Active
+      Environment:
+        Variables:
+          SSM_PARAMETER: testParameter
+      Layers:
+        - !Ref Dependecies
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: testParameter
